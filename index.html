@@ -27,27 +27,29 @@
         <p class="text-gray-400 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">
             Transform your career journey into a high-performance Player Card. Complete firm-hosted quizzes, dominate research challenges, and track your monthly progress to unlock direct PPI interviews with top-tier companies. Your growth isn't just a resume anymore—it's a live scorecard.
         </p>
-        
-       <form name="waitlist" method="POST" data-netlify="true" action="/?success=true" class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
-            <input type="hidden" name="form-name" value="waitlist" />
-            <input type="email" name="email" required placeholder="Enter your email" 
-                class="glass bg-transparent px-6 py-4 rounded-2xl flex-grow focus:outline-none focus:ring-2 focus:ring-purple-500 transition">
-            <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-8 py-4 rounded-2xl transition shadow-lg shadow-purple-500/20">
-                Join Waitlist
-            </button>
-        </form>
-<div id="success-message" class="hidden mt-6 p-4 glass rounded-2xl text-purple-400 font-bold neon-glow">
-            ✓ Welcome to the future of internships! We'll be in touch soon.
-        </div>
+       <form name="waitlist" method="POST" data-netlify="true" action="/" class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+    <input type="hidden" name="form-name" value="waitlist" />
+    <input type="email" name="email" id="email-field" required placeholder="Enter your email" 
+        class="glass bg-transparent px-6 py-4 rounded-2xl flex-grow focus:outline-none focus:ring-2 focus:ring-purple-500 transition">
+    <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-8 py-4 rounded-2xl transition shadow-lg shadow-purple-500/20">
+        Join Waitlist
+    </button>
+</form>
 
-        <script>
-          // This part checks if the form was just submitted successfully
-          if (window.location.search.includes('success=true')) {
-            document.getElementById('success-message').classList.remove('hidden');
-            // This cleans the URL so the message doesn't stay forever
-            window.history.replaceState({}, document.title, "/");
-          }
-        </script>
+<div id="success-message" class="hidden mt-6 p-4 glass rounded-2xl text-purple-400 font-bold neon-glow">
+    ✓ Welcome to the future of internships! We'll be in touch soon.
+</div>
+
+<script>
+  // This script catches the "Submit" and shows the message instantly
+  const form = document.querySelector('form[name="waitlist"]');
+  form.onsubmit = (e) => {
+    // Show the message immediately
+    document.getElementById('success-message').classList.remove('hidden');
+    // Clear the email field so it looks professional
+    document.getElementById('email-field').value = '';
+  };
+</script>
 
         
     </section>

@@ -27,7 +27,7 @@
         <p class="text-gray-400 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">
             Transform your career journey into a high-performance Player Card. Complete firm-hosted quizzes, dominate research challenges, and track your monthly progress to unlock direct PPI interviews with top-tier companies. Your growth isn't just a resume anymore—it's a live scorecard.
         </p>
-       <form name="waitlist" method="POST" data-netlify="true" action="/" class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+      <form name="waitlist" method="POST" data-netlify="true" id="waitlist-form" class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
     <input type="hidden" name="form-name" value="waitlist" />
     <input type="email" name="email" id="email-field" required placeholder="Enter your email" 
         class="glass bg-transparent px-6 py-4 rounded-2xl flex-grow focus:outline-none focus:ring-2 focus:ring-purple-500 transition">
@@ -36,19 +36,30 @@
     </button>
 </form>
 
-<div id="success-message" class="hidden mt-6 p-4 glass rounded-2xl text-purple-400 font-bold neon-glow">
-    ✓ Welcome to the future of internships! We'll be in touch soon.
+<div id="success-message" class="hidden mt-6 p-4 glass rounded-2xl text-purple-400 font-bold neon-glow text-center">
+    ✓ Success! You're on the Zynaut list.
 </div>
 
 <script>
-  // This script catches the "Submit" and shows the message instantly
-  const form = document.querySelector('form[name="waitlist"]');
-  form.onsubmit = (e) => {
-    // Show the message immediately
-    document.getElementById('success-message').classList.remove('hidden');
-    // Clear the email field so it looks professional
-    document.getElementById('email-field').value = '';
-  };
+  const waitlistForm = document.getElementById("waitlist-form");
+  
+  waitlistForm.addEventListener("submit", (e) => {
+    e.preventDefault(); // This kills the 404 forever
+    
+    const formData = new FormData(waitlistForm);
+    
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(formData).toString(),
+    })
+    .then(() => {
+      // Show the message and hide the form
+      document.getElementById('success-message').classList.remove('hidden');
+      waitlistForm.classList.add('hidden');
+    })
+    .catch((error) => console.error("Form error:", error));
+  });
 </script>
 
         

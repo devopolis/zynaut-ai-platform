@@ -28,7 +28,7 @@
             Transform your career journey into a high-performance Player Card. Complete firm-hosted quizzes, dominate research challenges, and track your monthly progress to unlock direct PPI interviews with top-tier companies. Your growth isn't just a resume anymore—it's a live scorecard.
         </p>
         
-        <form name="waitlist" method="POST" data-netlify="true" class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+       <form name="waitlist" method="POST" data-netlify="true" action="/?success=true" class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
             <input type="hidden" name="form-name" value="waitlist" />
             <input type="email" name="email" required placeholder="Enter your email" 
                 class="glass bg-transparent px-6 py-4 rounded-2xl flex-grow focus:outline-none focus:ring-2 focus:ring-purple-500 transition">
@@ -36,6 +36,20 @@
                 Join Waitlist
             </button>
         </form>
+<div id="success-message" class="hidden mt-6 p-4 glass rounded-2xl text-purple-400 font-bold neon-glow">
+            ✓ Welcome to the future of internships! We'll be in touch soon.
+        </div>
+
+        <script>
+          // This part checks if the form was just submitted successfully
+          if (window.location.search.includes('success=true')) {
+            document.getElementById('success-message').classList.remove('hidden');
+            // This cleans the URL so the message doesn't stay forever
+            window.history.replaceState({}, document.title, "/");
+          }
+        </script>
+
+        
     </section>
 
     <section class="max-w-6xl mx-auto px-4 pb-24 grid grid-cols-1 md:grid-cols-3 gap-6">

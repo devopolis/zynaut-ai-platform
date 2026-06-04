@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './supabase';
 import Sidebar from './components/Sidebar';
-import HomePage from './components/Home/HomePage';
+import HomePage from './components/home/HomePage';
 import DetailsPage from './components/DetailsPage';
 import ArenaPage from './components/ArenaPage';
 import LeaderboardPage from './components/LeaderboardPage';

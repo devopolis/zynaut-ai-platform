@@ -11,7 +11,7 @@ import RecruiterPage from './components/RecruiterPage';
 import SocietyPage from './components/SocietyPage';
 import LoginModal from './components/LoginModal';
 import ResumeBuilderPage from './components/ResumeBuilderPage';
- import InternshipsPage from './components/InternshipsPage';
+import InternshipsPage from './components/InternshipsPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -22,6 +22,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedComp, setSelectedComp] = useState(null);
   const [myApplications, setMyApplications] = useState([]);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -70,19 +71,19 @@ function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
- const login = async () => {
-  try {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: 'http://localhost:5173', // hardcoded for testing
-      },
-    });
-    // ... rest
-  } catch (err) {
-    // ...
-  }
-};
+  const login = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin, // Dynamically picks localhost or zynaut.in
+        },
+      });
+      if (error) throw error;
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleAuth = async (e) => {
     e.preventDefault();
@@ -163,6 +164,7 @@ function App() {
 
     setSelectedComp(comp);
     setCurrentPage(page);
+    setIsMobileMenuOpen(false); // Auto close sidebar on choice
     window.scrollTo(0, 0);
     window.history.pushState({ page, comp }, '', `#${page}`);
   };
@@ -173,11 +175,6 @@ function App() {
     if (!isAuthenticated) {
       setShowLoginModal(true);
     } else {
-      // In a real app, you'd open the registration modal here
-      // For simplicity, we'll just navigate to details and let the modal be handled there
-      // But we need to pass a prop to DetailsPage to open its own modal.
-      // We'll handle it by setting a state in DetailsPage itself.
-      // For now, we'll just alert.
       alert('Registration form would open here.');
     }
   };
@@ -192,14 +189,12 @@ function App() {
         return <ArenaPage selectedComp={selectedComp} goBack={goBack} />;
       case 'leaderboard':
         return <LeaderboardPage navigateTo={navigateTo} />;
-case 'resume':
-  return <ResumeBuilderPage navigateTo={navigateTo} />;
-
+      case 'resume':
+        return <ResumeBuilderPage navigateTo={navigateTo} />;
       case 'applications':
         return <ApplicationsPage navigateTo={navigateTo} myApplications={myApplications} />;
- case 'internships':
-   return <InternshipsPage navigateTo={navigateTo} />;
-
+      case 'internships':
+        return <InternshipsPage navigateTo={navigateTo} />;
       case 'profile':
         return <ProfilePage navigateTo={navigateTo} isAuthenticated={isAuthenticated} setShowLoginModal={setShowLoginModal} />;
       case 'recruiter':
@@ -212,7 +207,7 @@ case 'resume':
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC] font-sans text-slate-900 antialiased">
+    <div className="flex flex-col md:flex-row min-h-screen bg-[#F8FAFC] font-sans text-slate-900 antialiased">
       {showLoginModal && (
         <LoginModal
           onClose={() => setShowLoginModal(false)}
@@ -223,8 +218,37 @@ case 'resume':
           handleAuth={handleAuth}
         />
       )}
-      <Sidebar isAuthenticated={isAuthenticated} myApplications={myApplications} navigateTo={navigateTo} login={login} setIsAuthenticated={setIsAuthenticated} />
-      <main className="flex-1 ml-64 p-12 relative">
+
+      {/* Mobile Top Bar */}
+      <div className="flex items-center justify-between p-4 bg-white border-b border-slate-200 md:hidden sticky top-0 z-50">
+        <span className="font-bold text-xl tracking-tight text-indigo-600">Zynaut</span>
+        <button 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="p-2 text-slate-600 focus:outline-none"
+        >
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            {isMobileMenuOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
+      </div>
+
+      {/* Responsive Wrapper for Sidebar */}
+      <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} md:block fixed inset-y-0 left-0 z-40 top-14 md:top-0 w-64`}>
+        <Sidebar 
+          isAuthenticated={isAuthenticated} 
+          myApplications={myApplications} 
+          navigateTo={navigateTo} 
+          login={login} 
+          setIsAuthenticated={setIsAuthenticated} 
+        />
+      </div>
+
+      {/* Responsive Main Container */}
+      <main className="flex-1 md:ml-64 p-6 md:p-12 relative w-full overflow-x-hidden">
         {renderPage()}
       </main>
     </div>
